@@ -49,6 +49,7 @@ describe('', function() {
             'url': 'http://www.roflzoo.com/'})
           .expect(200)
           .expect(function(res) {
+            console.log('shorten link res',res)
             expect(res.body.url).to.equal('http://www.roflzoo.com/');
             expect(res.body.code).to.be.ok;
           })
@@ -96,6 +97,7 @@ describe('', function() {
           url: 'http://www.roflzoo.com/',
           title: 'Rofl Zoo - Daily funny animal pictures',
           base_url: 'http://127.0.0.1:4568',
+          code: '34243',
           visits: 0
         })
 
