@@ -3,6 +3,17 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      options: {
+        separator: ';',
+      },
+      dist: {
+        src: ['lib/**/*.js', 'app/**/*.js', 'public/client/**/*.js'],
+        dest: 'app/appBuilt.js'
+      },
+      lib: {
+        src: ['public/lib/**/*.js'],
+        dest: 'public/libBuilt.js'
+      }
     },
 
     mochaTest: {
@@ -21,23 +32,42 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      my_target: {
+        files: {
+          'app/appBuilt.min.js' : ['app/appBuilt.js'],
+          'public/libBuilt.min.js' : ['public/libBuilt.js']
+        }
+      }
     },
 
     jshint: {
       files: [
-        // Add filespec list here
+        'Gruntfile.js',
+        'lib/**/*.js',
+        'app/**/*.js',
+        'public/client/**/*.js',
+        'server-config.js',
+        'server.js'
       ],
       options: {
-        force: 'true',
         jshintrc: '.jshintrc',
         ignores: [
-          'public/lib/**/*.js',
-          'public/dist/**/*.js'
+          'app/appBuilt.js',
+          'app/appBuilt.min.js',
+          'public/libBuilt.js',
+          'public/libBuilt.min.js'
         ]
       }
     },
 
     cssmin: {
+      minify: {
+        expand: true,
+        cwd: 'public/',
+        src: ['*.css', '!*.min.css'],
+        dest: 'public/',
+        ext: '.min.css'
+      }
     },
 
     watch: {
@@ -94,6 +124,9 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build', [
+    'concat',
+    'uglify',
+    'cssmin'
   ]);
 
   grunt.registerTask('upload', function(n) {
@@ -105,7 +138,11 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('deploy', [
-    // add your deploy tasks here
+    'jshint',
+    'concat',
+    'uglify',
+    'cssmin',
+    'mochaTest'
   ]);
 
 

@@ -1,45 +1,33 @@
-var Bookshelf = require('bookshelf');
+var host = process.env.HOST;
+var user = process.env.user;
+var password = process.env.password;
+var databaseUrl = 'mydb';
+
+var crypto = require('crypto');
+var mongoose = require('mongoose')
+var bcrypt = require('bcrypt-nodejs');
+var Promise = require('bluebird');
 var path = require('path');
 
-var db = Bookshelf.initialize({
-  client: 'sqlite3',
-  connection: {
-    host: process.env.HOST,
-    user: process.env.user,
-    password: process.env.password,
-    database: 'shortlydb',
-    charset: 'utf8',
-    filename: path.join(__dirname, '../db/shortly.sqlite')
-  }
-});
+// mongoose.connect()
 
-db.knex.schema.hasTable('urls').then(function(exists) {
-  if (!exists) {
-    db.knex.schema.createTable('urls', function (link) {
-      link.increments('id').primary();
-      link.string('url', 255);
-      link.string('base_url', 255);
-      link.string('code', 100);
-      link.string('title', 255);
-      link.integer('visits');
-      link.timestamps();
-    }).then(function (table) {
-      console.log('Created Table', table);
-    });
-  }
-});
-
-db.knex.schema.hasTable('users').then(function(exists) {
-  if (!exists) {
-    db.knex.schema.createTable('users', function (user) {
-      user.increments('id').primary();
-      user.string('username', 100).unique();
-      user.string('password', 100);
-      user.timestamps();
-    }).then(function (table) {
-      console.log('Created Table', table);
-    });
-  }
-});
-
+var db = mongoose.createConnection(databaseUrl);
 module.exports = db;
+
+// db.createCollection('urls', function(err, collection) {
+//   if(err) {
+//     console.log(err)
+//   }
+//   console.log('Created table', collection)
+// });
+// db.createCollection('users', function(err, collection) {
+//   if(err) {
+//     console.log(err)
+//   }
+//   console.log('Created table', collection)
+// });
+
+// module.exports.urls = db.collection('urls');
+// module.exports.users = db.collection('users');
+
+
